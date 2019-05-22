@@ -82,21 +82,21 @@ contract ERC777 is IERC777, IERC20 {
     }
 
     /**
-     * See `IERC777.name`.
+     * @dev See `IERC777.name`.
      */
     function name() public view returns (string memory) {
         return _name;
     }
 
     /**
-     * See `IERC777.symbol`.
+     * @dev See `IERC777.symbol`.
      */
     function symbol() public view returns (string memory) {
         return _symbol;
     }
 
     /**
-     * See `ERC20Detailed.decimals`.
+     * @dev See `ERC20Detailed.decimals`.
      *
      * Always returns 18, as per the
      * [ERC777 EIP](https://eips.ethereum.org/EIPS/eip-777#backward-compatibility).
@@ -106,7 +106,7 @@ contract ERC777 is IERC777, IERC20 {
     }
 
     /**
-     * See `IERC777.granularity`.
+     * @dev See `IERC777.granularity`.
      *
      * This implementation always returns `1`.
      */
@@ -115,7 +115,7 @@ contract ERC777 is IERC777, IERC20 {
     }
 
     /**
-     * See `IERC777.totalSupply`.
+     * @dev See `IERC777.totalSupply`.
      */
     function totalSupply() public view returns (uint256) {
         return _totalSupply;
@@ -133,20 +133,20 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Also emits a `Transfer` event for ERC20 compatibility.
      */
-    function send(address to, uint256 amount, bytes calldata data) external {
-        _sendRequiringReceptionAck(msg.sender, msg.sender, to, amount, data, "");
+    function send(address recipient, uint256 amount, bytes calldata data) external {
+        _sendRequiringReceptionAck(msg.sender, msg.sender, recipient, amount, data, "");
     }
 
     /**
      * @dev See `IERC20.transfer`.
      *
-     * Unlike `send`, `to` is _not_ required to implement the `tokensReceived`
+     * Unlike `send`, `recipient` is _not_ required to implement the `tokensReceived`
      * interface if it is a contract.
      *
      * Also emits a `Sent` event.
      */
-    function transfer(address to, uint256 value) external returns (bool) {
-        _transfer(msg.sender, msg.sender, to, value);
+    function transfer(address recipient, uint256 amount) external returns (bool) {
+        _transfer(msg.sender, msg.sender, recipient, amount);
         return true;
     }
 
@@ -214,16 +214,16 @@ contract ERC777 is IERC777, IERC20 {
      * Emits `Sent` and `Transfer` events.
      */
     function operatorSend(
-        address from,
-        address to,
+        address sender,
+        address recipient,
         uint256 amount,
         bytes calldata data,
         bytes calldata operatorData
     )
     external
     {
-        require(isOperatorFor(msg.sender, from), "ERC777: caller is not an operator for holder");
-        _sendRequiringReceptionAck(msg.sender, from, to, amount, data, operatorData);
+        require(isOperatorFor(msg.sender, sender), "ERC777: caller is not an operator for holder");
+        _sendRequiringReceptionAck(msg.sender, sender, recipient, amount, data, operatorData);
     }
 
     /**
@@ -231,9 +231,9 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Emits `Sent` and `Transfer` events.
      */
-    function operatorBurn(address from, uint256 amount, bytes calldata data, bytes calldata operatorData) external {
-        require(isOperatorFor(msg.sender, from), "ERC777: caller is not an operator for holder");
-        _burn(msg.sender, from, amount, data, operatorData);
+    function operatorBurn(address account, uint256 amount, bytes calldata data, bytes calldata operatorData) external {
+        require(isOperatorFor(msg.sender, account), "ERC777: caller is not an operator for holder");
+        _burn(msg.sender, account, amount, data, operatorData);
     }
 
     /**
@@ -266,18 +266,18 @@ contract ERC777 is IERC777, IERC20 {
     *
     * Emits `Sent` and `Transfer` events.
     */
-    function transferFrom(address from, address to, uint256 value) external returns (bool) {
-        _transfer(msg.sender, from, to, value);
-        _approve(from, msg.sender, _allowances[from][msg.sender].sub(value));
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
+        _transfer(msg.sender, sender, recipient, amount);
+        _approve(sender, msg.sender, _allowances[sender][msg.sender].sub(amount));
         return true;
     }
 
     /**
-     * @dev Creates `amount` tokens and assigns them to a specified recipient
-     * (`to`), increasing the total supply.
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
      *
-     * If a send hook is registered for `to`, the corresponding function will be
-     * called with `operator`, `data` and `operatorData`.
+     * If a send hook is registered for `raccount`, the corresponding function
+     * will be called with `operator`, `data` and `operatorData`.
      *
      * See `IERC777Sender` and `IERC777Recipient`.
      *
@@ -285,55 +285,55 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Requirements
      *
-     * - `to` cannot be the zero address.
-     * - if `to` is a contract, it must implement the `tokensReceived`
+     * - `account` cannot be the zero address.
+     * - if `account` is a contract, it must implement the `tokensReceived`
      * interface.
      */
     function _mint(
         address operator,
-        address to,
+        address account,
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
     )
     internal
     {
-        require(to != address(0), "ERC777: mint to the zero address");
+        require(account != address(0), "ERC777: mint to the zero address");
 
         // Update state variables
         _totalSupply = _totalSupply.add(amount);
-        _balances[to] = _balances[to].add(amount);
+        _balances[account] = _balances[account].add(amount);
 
-        _callTokensReceived(operator, address(0), to, amount, userData, operatorData, true);
+        _callTokensReceived(operator, address(0), account, amount, userData, operatorData, true);
 
-        emit Minted(operator, to, amount, userData, operatorData);
-        emit Transfer(address(0), to, amount);
+        emit Minted(operator, account, amount, userData, operatorData);
+        emit Transfer(address(0), account, amount);
     }
 
-    function _transfer(address operator, address from, address to, uint256 amount) private {
-        _sendAllowingNoReceptionAck(operator, from, to, amount, "", "");
+    function _transfer(address operator, address sender, address recipient, uint256 amount) private {
+        _sendAllowingNoReceptionAck(operator, sender, recipient, amount, "", "");
     }
 
     function _sendRequiringReceptionAck(
         address operator,
-        address from,
-        address to,
+        address sender,
+        address recipient,
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
     ) private {
-        _send(operator, from, to, amount, userData, operatorData, true);
+        _send(operator, sender, recipient, amount, userData, operatorData, true);
     }
 
     function _sendAllowingNoReceptionAck(
         address operator,
-        address from,
-        address to,
+        address sender,
+        address recipient,
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
     ) private {
-        _send(operator, from, to, amount, userData, operatorData, false);
+        _send(operator, sender, recipient, amount, userData, operatorData, false);
     }
 
     /**

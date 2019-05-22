@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP. Does not include
- * the optional functions; to access them see [ERC20Detailed](#erc20detailed).
+ * the optional functions; to access them see `ERC20Detailed`.
  */
 interface IERC20 {
     /**
@@ -11,22 +11,18 @@ interface IERC20 {
     function totalSupply() external view returns (uint256);
 
     /**
-     * @dev Returns the amount of tokens owned by an account (`who`).
+     * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address who) external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
 
     /**
-     * @dev Moves tokens from the caller's account to a specified recipient
-     * (`to`). The amount is specified by `value`.
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
      * Emits a `Transfer` event.
-     *
-     * Requirements
-     * - The caller must have a balance of at least `value`.
      */
-    function transfer(address to, uint256 value) external returns (bool);
+    function transfer(address recipient, uint256 amount) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -38,7 +34,7 @@ interface IERC20 {
     function allowance(address owner, address spender) external view returns (uint256);
 
     /**
-     * @dev Sets `value` as the allowance of `spender` over the caller's tokens.
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
@@ -51,26 +47,22 @@ interface IERC20 {
      *
      * Emits an `Approval` event.
      */
-    function approve(address spender, uint256 value) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
 
     /**
-     * @dev Moves tokens from one account (`from`) to another (`to`) using the
-     * allowance mechanism. The caller must have at least `value` allowance
-     * from the owner. If this operation succeeds, the transferred amount
-     * (`value`) is deducted from the caller's allowance.
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
      *
      * Returns a boolean value indicating whether the operation succeeded.
      *
      * Emits a `Transfer` event.
-     *
-     * Requirements:
-     * - `from` must have allowance for `to`'s tokens.
      */
-    function transferFrom(address from, address to, uint256 value) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * anoter (`to`).
+     * another (`to`).
      *
      * Note that `value` may be zero.
      */
