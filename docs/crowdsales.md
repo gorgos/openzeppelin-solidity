@@ -160,7 +160,7 @@ There are a bunch of different validation requirements that your crowdsale might
 - [`CappedCrowdsale`](api/crowdsale#cappedcrowdsale) — adds a cap to your crowdsale, invalidating any purchases that would exceed that cap
 - [`IndividuallyCappedCrowdsale`](api/crowdsale#individuallycappedcrowdsale) — caps an individual's contributions.
 - [`WhitelistCrowdsale`](api/crowdsale#whitelistcrowdsale) — only allow whitelisted participants to purchase tokens. this is useful for putting your KYC / AML whitelist on-chain!
-- [`TimedCrowdsale`](api/crowdsale#timedcrowdsale) — adds an `openingTime` and `closingTime` to your crowdsale
+- [`TimedCrowdsale`](api/crowdsale#timedcrowdsale) — adds an [`openingTime`](api/crowdsale#TimedCrowdsale.openingTime()) and [`closingTime`](api/crowdsale#TimedCrowdsale.closingTime()) to your crowdsale
 
 Simply mix and match these crowdsale flavors to your heart's content:
 
@@ -222,7 +222,7 @@ contract MyCrowdsale is PostDeliveryCrowdsale, TimedCrowdsale, Crowdsale {
 
 ### RefundableCrowdsale
 
-The [`RefundableCrowdsale`](api/crowdsale#refundablecrowdsale) offers to refund users if a minimum goal is not reached. If the goal is not reached, the users can `claimRefund()` to get their Ether back.
+The [`RefundableCrowdsale`](api/crowdsale#refundablecrowdsale) offers to refund users if a minimum goal is not reached. If the goal is not reached, the users can [`claimRefund`](api/crowdsale#RefundableCrowdsale.claimRefund(address%20payable)) to get their Ether back.
 
 
 ```solidity
