@@ -31,3 +31,5 @@ Additionally there are multiple extensions, including:
 Finally, there are some utilities to interact with ERC20 contracts in various ways.
 - `SafeERC20` is a wrapper around the interface that eliminates the need to handle boolean return values.
 - `TokenTimelock` can hold tokens for a beneficiary until a specified time.
+
+> This page is incomplete. We're working to improve it for the next release. Stay tuned!

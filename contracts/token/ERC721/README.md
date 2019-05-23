@@ -34,4 +34,4 @@ of functionality you would like to support in your token by combining the
 desired subset through inheritance. The fully featured token implementing all
 three interfaces is prepackaged as `ERC721Full`.
 
-
+> This page is incomplete. We're working to improve it for the next release. Stay tuned!
