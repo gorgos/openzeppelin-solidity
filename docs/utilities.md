@@ -7,12 +7,12 @@ OpenZeppelin provides a ton of useful utilities that you can use in your project
 
 ## Cryptography
 
-- [ECDSA.sol](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/ECDSA.sol) — provides functions for recovering and managing Ethereum account ECDSA signatures:
+- [`ECDSA`](api/cryptography#ecdsa) — provides functions for recovering and managing Ethereum account ECDSA signatures:
   - to use it, declare: `using ECDSA for bytes32;`
   - signatures are tightly packed, 65 byte `bytes` that look like `{v (1)} {r (32)} {s (32)}`
     - this is the default from `web3.eth.sign` so you probably don't need to worry about this format
-  - recover the signer using `myDataHash.recover(signature)`
-  - if you are using `eth_personalSign`, the signer will hash your data and then add the prefix `\x19Ethereum Signed Message:\n`, so if you're attempting to recover the signer of an Ethereum signed message hash, you'll want to use `toEthSignedMessageHash`
+  - recover the signer using [`myDataHash.recover(signature)`](api/cryptography#ECDSA.recover(bytes32,bytes))
+  - if you are using `eth_personalSign`, the signer will hash your data and then add the prefix `\x19Ethereum Signed Message:\n`, so if you're attempting to recover the signer of an Ethereum signed message hash, you'll want to use [`toEthSignedMessageHash`](api/cryptography#ECDSA.toEthSignedMessageHash(bytes32))
 
 
 Use these functions in combination to verify that a user has signed some information on-chain:
