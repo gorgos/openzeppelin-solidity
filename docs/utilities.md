@@ -28,19 +28,19 @@ keccack256(
 .recover(signature)
 ```
 
-- [MerkleProof.sol](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/cryptography/MerkleProof.sol) — provides `verify(...)` for verifying merkle proofs.
+- [`MerkleProof`](api/cryptography#merkleproof) — provides [`verify`](api/cryptography#MerkleProof.verify(bytes32[],bytes32,bytes32)) for verifying merkle proofs.
 
 
 ## Introspection
 
 In Solidity, it's frequently helpful to know whether or not a contract supports an interface you'd like to use. ERC165 is a standard that helps do runtime interface detection. OpenZeppelin provides some helpers, both for implementing ERC165 in your contracts and querying other contracts:
 
-- [IERC165](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/introspection/IERC165.sol) — this is the ERC165 interface that defines `supportsInterface(...)`. When implementing ERC165, you'll conform to this interface.
-- [ERC165](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/introspection/ERC165.sol) — inherit this contract if you'd like to support interface detection using a lookup table in contract storage. You can register interfaces using `_registerInterface(bytes4)`: check out example usage as part of the ERC721 implementation.
-- [ERC165Checker](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/introspection/ERC165Checker.sol) — ERC165Checker simplifies the process of checking whether or not a contract supports an interface you care about.
+- [`IERC165`](api/introspection#ierc165) — this is the ERC165 interface that defines [`supportsInterface`](api/introspection#IERC165.supportsInterface(bytes4)). When implementing ERC165, you'll conform to this interface.
+- [`ERC165`](api/introspection#erc165) — inherit this contract if you'd like to support interface detection using a lookup table in contract storage. You can register interfaces using [`_registerInterface(bytes4)`](api/introspection#ERC165._registerInterface(bytes4)): check out example usage as part of the ERC721 implementation.
+- [`ERC165Checker`](api/introspection#erc165checker) — ERC165Checker simplifies the process of checking whether or not a contract supports an interface you care about.
   - include with `using ERC165Checker for address;`
-  - `myAddress.supportsInterface(bytes4)`
-  - `myAddress.supportsInterfaces(bytes4[])`
+  - [`myAddress._supportsInterface(bytes4)`](api/introspection#ERC165Checker._supportsInterface(address,bytes4))
+  - [`myAddress._supportsAllInterfaces(bytes4[])`](api/introspection#ERC165Checker._supportsAllInterfaces(address,bytes4[]))
 
 
 ```solidity
@@ -67,7 +67,7 @@ contract MyContract {
 
 ## Math
 
-The most popular math related library OpenZeppelin provides is [SafeMath](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol), which provides mathematical functions that protect your contract from overflows and underflows.
+The most popular math related library OpenZeppelin provides is [`SafeMath`](api/math#safemath), which provides mathematical functions that protect your contract from overflows and underflows.
 
 Include the contract with `using SafeMath for uint256;` and then call the functions:
 
@@ -81,14 +81,14 @@ Easy!
 
 ## Payment
 
-Want to split some payments between multiple people? Maybe you have an app that sends 30% of art purchases to the original creator and 70% of the profits to the current owner; you can build that with [`PaymentSplitter`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/payment/PaymentSplitter.sol)!.
+Want to split some payments between multiple people? Maybe you have an app that sends 30% of art purchases to the original creator and 70% of the profits to the current owner; you can build that with [`PaymentSplitter`](api/payment#paymentsplitter)!
 
-In solidity, there are some security concerns with blindly sending money to accounts, since it allows them to execute arbitrary code. You can read up on these security concerns in the [Ethereum Smart Contract Best Practices](https://consensys.github.io/smart-contract-best-practices/) website. One of the ways to fix reentrancy and stalling problems is, instead of immediately sending Ether to accounts that need it, you can use [`PullPayment`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/payment/PullPayment.sol), which offers an `asyncSend` function for sending money to something and requesting that they `withdraw()` it later.
+In solidity, there are some security concerns with blindly sending money to accounts, since it allows them to execute arbitrary code. You can read up on these security concerns in the [Ethereum Smart Contract Best Practices](https://consensys.github.io/smart-contract-best-practices/) website. One of the ways to fix reentrancy and stalling problems is, instead of immediately sending Ether to accounts that need it, you can use [`PullPayment`](api/payment#pullpayment), which offers an [`_asyncTransfer`](api/payment#PullPayment._asyncTransfer(address,uint256)) function for sending money to something and requesting that they [`withdrawPayments()`](api/payment#PullPayment.withdrawPayments(address%20payable)) it later.
 
-If you want to Escrow some funds, check out [`Escrow`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/payment/escrow/Escrow.sol) and [`ConditionalEscrow`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/payment/escrow/ConditionalEscrow.sol) for governing the release of some escrowed Ether.
+If you want to Escrow some funds, check out [`Escrow`](api/payment#escrow) and [`ConditionalEscrow`](api/payment#conditionalescrow) for governing the release of some escrowed Ether.
 
 ### Misc
 
-Want to check if an address is a contract? Use [`Address`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/master/contracts/utils/Address.sol) and `Address#isContract()`.
+Want to check if an address is a contract? Use [`Address`](api/utils#address) and [`Address#isContract()`](api/utils#Address.isContract(address)).
 
-Want to keep track of some numbers that increment by 1 every time you want another one? Check out [`Counter`](https://github.com/OpenZeppelin/openzeppelin-solidity/blob/v2.1.2/contracts/drafts/Counter.sol). This is especially useful for creating incremental ERC721 tokenIds like we did in the last section.
+Want to keep track of some numbers that increment by 1 every time you want another one? Check out [`Counter`](api/drafts#counter). This is especially useful for creating incremental ERC721 `tokenId`s like we did in the last section.
